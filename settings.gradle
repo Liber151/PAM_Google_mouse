@@ -1,0 +1,2 @@
+rootProject.name='PAM_Google_Mouse'
+include ':app'
