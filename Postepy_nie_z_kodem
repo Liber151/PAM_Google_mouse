@@ -1,0 +1,13 @@
+Update 2: 
+Uczę się obsługi wydarzeń oraz aktywności w android studio
+Przekazywanie danych podczas zmiany orientacji
+Obluga API google maps
+
+Do zrobienia:
+Input na mapie pozwalajacy wybrac miejsce
+prawdopodobnie zrobie to w ten sposob, ze wybrany marker bedzie lewym gornym rogiem obszaru po ktorym bedziemy sie poruszac
+Narzuce aspect ratio 16:9 i dlugosc jednego z bokow bedzie kontrolowana jakims sliderem,
+Dzieki czemu ograniczę stopień mojego zagłębienia w api googlowe, a polozenie myszki na ekranie bede liczyl wzorem
+coords_to_px(Lok_gracza(lat,long)-Lok_markera(lat,long))
+nad funkcja coords_to_px bede musial jeszcze poexperymentowac
+Uważam że translacja koordynatow na wartosci x,y w przestrzeni 2d nie powinna byc jakos razaco zla przy tak malej skali
