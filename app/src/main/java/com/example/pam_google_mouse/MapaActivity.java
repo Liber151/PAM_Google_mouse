@@ -73,12 +73,14 @@ public class MapaActivity extends AppCompatActivity {
         URL obj = new URL("https://zalcizenie.000webhostapp.com/?request=grab&x="+x+"&y="+y+"&operacja="+operacja);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
+        int responseCode = con.getResponseCode();
+            System.out.println("GET Response Code :: " + responseCode);
     }
 
     protected Bitmap doInBackground(String... urls) {
 
         try {
-            sendGET();  //sprobuj wyslac get requesta do serwera
+            sendGET();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +88,7 @@ public class MapaActivity extends AppCompatActivity {
         String urldisplay = urls[0];
         Bitmap bmp = null;
         try {
-            InputStream in = new java.net.URL(urldisplay).openStream(); //pobierz obraz z url
+            InputStream in = new java.net.URL(urldisplay).openStream();
             bmp = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
@@ -96,7 +98,7 @@ public class MapaActivity extends AppCompatActivity {
     }
         public DownloadImageTask(ImageView bmImage,String operand) { //konstruktor
             this.bmImage = bmImage;
-            this.operacja = operand;
+            this.operacja=operand;
         }
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
