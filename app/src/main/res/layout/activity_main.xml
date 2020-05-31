@@ -7,22 +7,58 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Obecne przesuneicie wzgledem punkty poczatkowego:" />
+
+    <TextView
         android:id="@+id/latTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Latitude: "/>
+        android:text="@string/lat" />
 
     <TextView
         android:id="@+id/lonTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Longitude: "/>
+        android:text="@string/longi" />
+
+    <TextView
+        android:id="@+id/counterTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="falseAnswer"
-        android:text="Button" />
+        android:text="@string/refresh" />
+
+    <SeekBar
+        android:id="@+id/ChooseRange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="99"
+        android:progress="1" />
+
+    <TextView
+        android:id="@+id/wielkoscTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/podglad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="podglad"
+        android:text="@string/przejscie" />
+
+    <TextView
+        android:id="@+id/daneDebug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
 </LinearLayout>

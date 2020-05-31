@@ -14,8 +14,10 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -26,10 +28,28 @@ import com.google.android.gms.tasks.Task;
 public class MainActivity extends AppCompatActivity {
 
     double[] przesuniecie={0,0};
+    double[] lokalizacja={0,0};
     boolean flaga=false;
     int PERMISSION_ID = 44;
+    int counter=0;
+    double skala=1;
+    double wielkoscPola=1;
+    double weilkoscSkali=1;
+    double x,y;
+    double r1, r2, B, Ra=0;
     FusedLocationProviderClient mFusedLocationClient;
-    TextView latTextView, lonTextView;
+    TextView latTextView, lonTextView, counterText, wielkoscEkranu, daneDebug;
+    SeekBar wyborSkali;
+
+    public void updateSkali(){
+        weilkoscSkali=new Double(100-wyborSkali.getProgress())/100*skala;
+        wielkoscPola=new Double(wyborSkali.getProgress()+1)/100*skala;
+        counterText.setText("1deg global="+String.format("%.3f",weilkoscSkali) +"km");
+        wielkoscEkranu.setText("Wielkosc ekranu na osi poziomej: "+String.format("%.3f",wielkoscPola)+"km");
+        x=przesuniecie[1]*Ra*weilkoscSkali;
+        y=przesuniecie[0]*Ra*weilkoscSkali*-1;
+        daneDebug.setText(przesuniecie[1]+" "+przesuniecie[1]+" x:"+x+" y: "+y);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +58,55 @@ public class MainActivity extends AppCompatActivity {
 
         latTextView = findViewById(R.id.latTextView);
         lonTextView = findViewById(R.id.lonTextView);
+        wielkoscEkranu=findViewById(R.id.wielkoscTextView);
+        counterText = findViewById(R.id.counterTextView);
+        wyborSkali = findViewById(R.id.ChooseRange);
+        daneDebug=findViewById(R.id.daneDebug);
+        wyborSkali.setProgress(99);
+        updateSkali();
+        wyborSkali.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSkali();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         getLastLocation();
     }
 
+    public void podglad(View view) {
+        Intent i = new Intent(getApplicationContext(), MapaActivity.class);
+        i.putExtra("x",x);
+        i.putExtra("y",y);
+        //tutaj zapakowac x i y i przekazac do mapa activity, w ktorej bedzie wkladane do get requesta
+
+        startActivity(i);//odpal nowa aktywnosc
+    }
+
+
+    private double obliczenie_skali(double lat){
+
+        r1=6378.137;
+        r2=6356.752;
+        B=lat;
+        Ra=Math.sqrt(
+                (Math.pow((Math.pow(r1,2)*Math.cos(B)),2)+Math.pow(Math.pow(r2,2)*Math.sin(B),2))
+                /(Math.pow(r1*Math.cos(B),2)+Math.pow(r2*Math.sin(B),2))
+        );//wynik w km
+        Ra=Ra/360;
+        return Ra;
+    }
+
     @SuppressLint("MissingPermission")
     private void getLastLocation(){
         if (checkPermissions()) {
-            Toast.makeText(this, "AAAAAAAA", Toast.LENGTH_LONG).show();
             if (isLocationEnabled()) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(
                         new OnCompleteListener<Location>() {
@@ -56,13 +116,18 @@ public class MainActivity extends AppCompatActivity {
                                 if (location == null) {
                                     requestNewLocationData();
                                 } else {
-                                    if (flaga==false){
+                                    if ((flaga==false) && (location.getLatitude()!=0 && location.getLongitude()!=0)){
                                         flaga=true;
-                                        przesuniecie[0]=location.getLatitude();
-                                        przesuniecie[1]=location.getLongitude();
+                                        lokalizacja[0]=location.getLatitude();
+                                        lokalizacja[1]=location.getLongitude();
+                                        skala=obliczenie_skali(location.getLatitude());
                                     }
-                                    latTextView.setText(location.getLatitude()-przesuniecie[0]+"");
-                                    lonTextView.setText(location.getLongitude()-przesuniecie[1]+"");
+                                    updateSkali();
+                                    przesuniecie[0]=location.getLatitude()-lokalizacja[0];
+                                    przesuniecie[1]=location.getLongitude()-lokalizacja[1];
+                                    latTextView.setText(przesuniecie[0]+"");
+                                    lonTextView.setText(przesuniecie[1]+"");
+                                    counter++;
                                 }
                             }
                         }
@@ -83,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
 
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(200);
+        mLocationRequest.setInterval(100);
         mLocationRequest.setFastestInterval(200);
-        mLocationRequest.setNumUpdates(5);
+        mLocationRequest.setNumUpdates(50);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.requestLocationUpdates(
@@ -99,8 +164,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
-            latTextView.setText(mLastLocation.getLatitude()+"");
-            lonTextView.setText(mLastLocation.getLongitude()+"");
         }
     };
 

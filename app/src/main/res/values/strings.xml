@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="menu_settings">Settings</string>
+    <string name="button">Przeslij zapytanie i pobierz obraz</string>
+    <string name="przejscie">Zarzadzanie ekranem</string>
+    <string name="longi">Longitude: </string>
+    <string name="lat">Latitude: </string>
+    <string name="refresh">Odswiez pozycje</string>
+    <string name="click">LPM Klik</string>
+    <string name="dclick">LPM Double Klik</string>
+    <string name="holdl">LPM Trzymej</string>
+    <string name="clickr">PPM Klik</string>
+    <string name="holdr">PPM Trzymej</string>
+    <string name="textZapytania">Wybierz operacje ktora bedzie wykonana przez myche i wcisnij przycisk powyzej</string>
 </resources>
